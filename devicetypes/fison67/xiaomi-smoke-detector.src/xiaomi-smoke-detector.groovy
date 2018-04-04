@@ -30,11 +30,11 @@
 import groovy.json.JsonSlurper
 
 metadata {
-	definition (name: "Xiaomi Smoke Dectector", namespace: "fison67", author: "fison67") {
+	definition (name: "Xiaomi Smoke Detector", namespace: "fison67", author: "fison67") {
         capability "Sensor"
+        capability "Battery"
         capability "Smoke Detector"    //"detected", "clear", "tested"
          
-        attribute "battery", "string"
         attribute "density", "string"        
         attribute "lastCheckin", "Date"
         
@@ -50,6 +50,7 @@ metadata {
 			tileAttribute ("device.smoke", key: "PRIMARY_CONTROL") {
                	attributeState "clear", label:'${name}', icon:"https://postfiles.pstatic.net/MjAxODAzMjZfMTkz/MDAxNTIyMDQzNDE0MzIx.Z7WbNCehVcAmt3mM5jdadJkR-TMqI200UzKfmjYjCwYg.dnE5kkFzbJ6cXAbbSJu5SwCUcv4x-cxM0UD3RQVcVAQg.PNG.fuls/Fire_Alarm_75.png?type=w773" , backgroundColor:"#ffffff"
             	attributeState "detected", label:'${name}', icon:"https://postfiles.pstatic.net/MjAxODAzMjZfMTkz/MDAxNTIyMDQzNDE0MzIx.Z7WbNCehVcAmt3mM5jdadJkR-TMqI200UzKfmjYjCwYg.dnE5kkFzbJ6cXAbbSJu5SwCUcv4x-cxM0UD3RQVcVAQg.PNG.fuls/Fire_Alarm_75.png?type=w773" , backgroundColor:"#e86d13"
+            	attributeState "tested", label:'${name}', icon:"https://postfiles.pstatic.net/MjAxODAzMjZfMTkz/MDAxNTIyMDQzNDE0MzIx.Z7WbNCehVcAmt3mM5jdadJkR-TMqI200UzKfmjYjCwYg.dnE5kkFzbJ6cXAbbSJu5SwCUcv4x-cxM0UD3RQVcVAQg.PNG.fuls/Fire_Alarm_75.png?type=w773" , backgroundColor:"#e86d13"
 			}
             tileAttribute("device.lastCheckin", key: "SECONDARY_CONTROL") {
     			attributeState("default", label:'Last Update: ${currentValue}',icon: "st.Health & Wellness.health9")
