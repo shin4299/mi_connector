@@ -68,14 +68,15 @@ metadata {
         capability "Switch Level"
         capability "Temperature Measurement"
         capability "Relative Humidity Measurement"
-		capability "Fan Speed"
-		capability "Refresh"
-		capability "Sensor"
+	capability "Fan Speed"
+	capability "Refresh"
+	capability "Sensor"
+	capability "Battery"
+	capability "Power Source"
          
         attribute "buzzer", "string"
         attribute "anglelevel", "string"
         attribute "ledBrightness", "string"
-        attribute "speedlevel", "string"
         attribute "processTimer", "number"
         attribute "fanspeedstep", "enum", ["low", "medium", "high", "strong"]        
         attribute "setangle", "enum", ["off", "on", "30", "60", "90", "120"]        
@@ -85,8 +86,6 @@ metadata {
         attribute "naturalLevel", "string"
         attribute "speed", "string"
         attribute "powerOffTime", "string"
-        attribute "acPower", "string"
-        attribute "batteryLevel", "string"
         attribute "childLock", "string"
         
         attribute "lastCheckin", "Date"
@@ -189,7 +188,12 @@ metadata {
 	controlTile("timerset", "device.level", "slider", height: 1, width: 1, range:"(1..120)") {
 	    state "level", action:"switch level.setLevel"
 		}
-        
+		
+//	For New Smartthings App
+        standardTile("powerSource", "device.powerSource", width: 2, height: 2) {
+            state "dc", label:'USB'
+            state "battery", label:'Battery'
+        }        
         standardTile("angle", "device.setangle") {
             state "on", label:'ON', action:"setAngleOff", icon:"st.motion.motion.inactive", backgroundColor:"#b2cc68", nextState:"turningOff"
             state "off", label:'OFF', action:"setAngleOn", icon:"st.tesla.tesla-locked", backgroundColor:"#cad2b5", nextState:"turningOn"
@@ -814,7 +818,7 @@ def callback(physicalgraph.device.HubResponse hubResponse){
 	state.batteryLe = jsonObj.state.batteryLevel
         sendEvent(name:"setangle", value: jsonObj.properties.angleEnable)
         sendEvent(name:"setdirection", value: jsonObj.properties.angleEnable)
-        sendEvent(name:"switch", value: jsonObj.properties.power == true ? "on" : "off")
+        sendEvent(name:"switch", value: (jsonObj.properties.power == true ? "on" : "off"))
         sendEvent(name:"buzzer", value: (jsonObj.state.buzzer == true ? "on" : "off"))
         sendEvent(name:"ledBrightness", value: jsonObj.state.ledBrightness)
 	    
@@ -829,6 +833,8 @@ def callback(physicalgraph.device.HubResponse hubResponse){
 def multiatt(){
     	sendEvent(name:"lastCheckin", value: state.temp +": " + state.currenttemp + "° " + state.hum + ": " + state.currenthumi + "% " + state.angle + ": " + state.currentangle + "°")
 	sendEvent(name:"battery", value: state.acPower + state.batteryLe + "%" )
+//	For New Smartthings App
+	sendEvent(name:"powerSource", value: (state.acPower == "☈: " ? "dc" : "battery"))	
 }
 def sendCommand(options, _callback){
 	def myhubAction = new physicalgraph.device.HubAction(options, null, [callback: _callback])
